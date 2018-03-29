@@ -7,11 +7,12 @@ REFDIR=$2
 SPECIES=$3
 CPUS=$4
 
+cd $WDIR/bams 
 for i in *bam
 do
   TAG=${i%%.bam}
   while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
-  calculate_coverage.sh $TAG $WDIR $REFDIR $SPECIES & 
+  bc_calculate_coverage.sh $TAG $WDIR $REFDIR $SPECIES & 
 done
 wait
 
