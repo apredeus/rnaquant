@@ -3,17 +3,17 @@
 ## local version w/modern Picard 
 
 TAG=$1
-REFDIR=$2
-BAMDIR=$3
-LOGDIR=$4
-SPECIES=$5
+WDIR=$2
+REFDIR=$3
+BAMDIR=$4
+LOGDIR=$5
+SPECIES=$6
 
 DIR=`pwd`
 
-#RRNA=$REFDIR/Assemblies/$SPECIES.rRNA_merged.intervals
-GENOME=$REFDIR/Assemblies/$SPECIES.fa
-REFFLAT=$REFDIR/Assemblies/$SPECIES.refFlat.txt
-PICARD=~/picard/dist
+RRNA=$REFDIR/Assemblies/$SPECIES/$SPECIES.rRNA_merged.intervals
+GENOME=$REFDIR/Assemblies/$SPECIES/$SPECIES.fa
+REFFLAT=$REFDIR/Assemblies/$SPECIES/$SPECIES.refFlat.txt
 
 ## number of reads in FASTQ
 R1=`grep "Number of input reads" $LOGDIR/$TAG.star_final.log  | awk '{print $6}'`
@@ -34,34 +34,57 @@ echo "The sum of all reported percentages is estimated at $Pall"
 echo "done calculating FASTQ and BAM statistics"
 echo "---------------------------------------------------------------------------------------------------------"
 
-#picard CollectRnaSeqMetrics INPUT=$BAMDIR/$TAG.bam OUTPUT=$TAG.picard.metrics REF_FLAT=$REFFLAT RIBOSOMAL_INTERVALS=$RRNA STRAND_SPECIFICITY=FIRST_READ_TRANSCRIPTION_STRAND REFERENCE_SEQUENCE=$GENOME
-picard CollectRnaSeqMetrics INPUT=$BAMDIR/$TAG.bam OUTPUT=$TAG.picard.metrics REF_FLAT=$REFFLAT STRAND_SPECIFICITY=FIRST_READ_TRANSCRIPTION_STRAND REFERENCE_SEQUENCE=$GENOME
+picard -Xmx4g CollectRnaSeqMetrics INPUT=$BAMDIR/$TAG.bam OUTPUT=$TAG.picard.metrics REF_FLAT=$REFFLAT RIBOSOMAL_INTERVALS=$RRNA STRAND_SPECIFICITY=FIRST_READ_TRANSCRIPTION_STRAND REFERENCE_SEQUENCE=$GENOME
 
 #percent reads aligned to ribosomal RNA
 P7=""
+H7=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $16}' | head -n 1`
+if [[ $H7 == "PCT_RIBOSOMAL_BASES" ]]
+then 
+  P7=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $16}' | tail -n 1 | awk '{printf "%.2f",$1*100}'`
+else
+  echo "WARNING: failed to find PCT_RIBOSOMAL_BASES."
+fi  
+
 #percent reads aligned to coding regions
 P8=""
+H8=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $17}' | head -n 1`
+if [[ $H8 == "PCT_CODING_BASES" ]]
+then 
+  P8=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $17}' | tail -n 1 | awk '{printf "%.2f",$1*100}'`
+else
+  echo "WARNING: failed to find PCT_CODING_BASES."
+fi  
+
 #percent reads aligned to UTR regions 
 P9=""
+H9=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $18}' | head -n 1`
+if [[ $H9 == "PCT_UTR_BASES" ]]
+then 
+  P9=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $18}' | tail -n 1 | awk '{printf "%.2f",$1*100}'`
+else
+  echo "WARNING: failed to find PCT_UTR_BASES."
+fi  
+
 #percent reads aligned to intronic regions 
 P10=""
+H10=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $19}' | head -n 1`
+if [[ $H10 == "PCT_INTRONIC_BASES" ]]
+then 
+  P10=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $19}' | tail -n 1 | awk '{printf "%.2f",$1*100}'`
+else
+  echo "WARNING: failed to find PCT_INTRONIC_BASES."
+fi  
+
 #percent reads aligned to intergenic regions 
 P11=""
-
-KK=`grep -A 2 "METRICS CLASS" $TAG.picard.metrics | awk '{if (NR==2) print}'`
-LL=`grep -A 2 "METRICS CLASS" $TAG.picard.metrics | awk '{if (NR==3) print}'`
-a=( $KK )
-b=( $LL )
-i=0
-while [[ ${a[$i]} != "" ]]
-do
-  if [[ ${a[$i]} == "PCT_RIBOSOMAL_BASES" ]];  then P7=`echo ${b[$i]}  | awk '{printf "%.2f",$1*100}'`; fi
-  if [[ ${a[$i]} == "PCT_CODING_BASES" ]];     then P8=`echo ${b[$i]}  | awk '{printf "%.2f",$1*100}'`; fi
-  if [[ ${a[$i]} == "PCT_UTR_BASES" ]];        then P9=`echo ${b[$i]}  | awk '{printf "%.2f",$1*100}'`; fi
-  if [[ ${a[$i]} == "PCT_INTRONIC_BASES" ]];   then P10=`echo ${b[$i]} | awk '{printf "%.2f",$1*100}'`; fi
-  if [[ ${a[$i]} == "PCT_INTERGENIC_BASES" ]]; then P11=`echo ${b[$i]} | awk '{printf "%.2f",$1*100}'`; fi
-  i=$((i+1))
-done
+H11=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $20}' | head -n 1`
+if [[ $H11 == "PCT_INTERGENIC_BASES" ]]
+then 
+  P11=`grep -A 1 PF_BASES $TAG.picard.metrics | awk -F "\t" '{print $20}' | tail -n 1 | awk '{printf "%.2f",$1*100}'`
+else
+  echo "WARNING: failed to find PCT_INTERGENIC_BASES."
+fi  
 
 ## rm $TAG.picard.metrics
 

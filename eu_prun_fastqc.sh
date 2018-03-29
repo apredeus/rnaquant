@@ -2,10 +2,12 @@
 
 ## PIPELINE VERSION
 
-cd fastqs
+WDIR=$1
+CPUS=$2
 
 for i in *.fastq.gz
 do
+  while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
   echo "fastqc: Gathering sequencing metrics for sample $i"
   fastqc -q $i & 
 done 
@@ -15,5 +17,3 @@ rm *zip
 mv *html ../FastQC
 
 echo "ALL FASTQC PROCESSING IS DONE!"
-echo
-echo

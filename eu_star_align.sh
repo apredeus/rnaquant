@@ -4,9 +4,10 @@
 ## archived FASTQ is assumed
 
 TAG=$1
-REFDIR=$2
-SPECIES=$3
-CPUS=$4
+WDIR=$2
+REFDIR=$3
+SPECIES=$4
+CPUS=$5
 
 RL=""
 READS=""
@@ -27,7 +28,7 @@ then
   READS=$WDIR/$TAG.fastq.gz
 elif [[ -e $TAG.R1.fastq.gz && -e $TAG.R2.fastq.gz ]]
 then
-  RL=`zcat $TAG.R1.fastq.gz | head -n 2 | tail -n 1 | wc -c | awk '{print $1-1}'`
+  RL=`zcat $TAG.fastq.gz | head -n 2 | tail -n 1 | wc -c | awk '{print $1-1}'`
   REF=$REFDIR/STAR/${SPECIES}_${RL}bp
   echo "Processing alignment as paired-end, using STAR index $REF."
   READS="$WDIR/$TAG.R1.fastq.gz $WDIR/$TAG.R2.fastq.gz"
@@ -38,8 +39,8 @@ fi
 
 if [[ ! -d $REF ]]
 then 
-  echo "ERROR: STAR index $REF does not exist, attempting to use default (50 bp).."
-  REF=$REFDIR/STAR/${SPECIES}_50bp
+  echo "ERROR: STAR index $REF does not exist, attempting to use default (151 bp).."
+  REF=$REFDIR/STAR/${SPECIES}_151bp
   if [[ ! -d $REF ]]
   then
     echo "ERROR: No appropriate STAR reference was found!" 

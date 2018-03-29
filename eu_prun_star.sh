@@ -2,11 +2,11 @@
 
 ## PIPELINE VERSION
 
-cd fastqs
-
-REFDIR=$1
-SPECIES=$2
-CPUS=$3
+WDIR=$1
+REFDIR=$2
+SPECIES=$3
+CPUS=$4
+NJOB=$((CPUS/4))
 
 KK=`for i in *fastq.gz
 do 
@@ -17,9 +17,10 @@ done | sort | uniq`
 
 for i in $KK
 do
-  echo "STAR: running alignment for tag $i.." 
-  ../star_align.sh $i $REFDIR $SPECIES $CPUS > $i.star_stdout.log 
+  while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
+  star_align.sh $i $WDIR $REFDIR $SPECIES 4 & 
 done
+wait
 
 mv *.star_stdout.log ../STAR_logs
 mv *STAR/*log ../STAR_logs 
@@ -28,6 +29,4 @@ mv *STAR/*bam ../bams
 
 rm -rf *STAR 
 
-echo "ALL STAR ALIGMENT IS DONE!"
-echo
-echo
+echo "ALL STAR ALIGMENTS ARE DONE!"
