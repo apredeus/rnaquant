@@ -11,6 +11,7 @@ CPUS=$5
 cd $WDIR/tr_bams 
 
 READS=""
+PARROT=""
 
 if [[ $TAG == "" || $REF == "" || $STRAND == "" ]]
 then 
@@ -32,24 +33,15 @@ else
   exit
 fi
 
-if [[ -e $TAG.fastq.gz ]]
+TEST=`samtools view -f 0x1 $TAG.tr.bam | head`
+
+if [[ $TEST == "" ]]
 then
   echo "RSEM: processing quantification of $TAG as single-end, strandedness $STRAND ($FLAG)"
-  READS="$TAG.fastq.gz"
-elif [[ -e $TAG.R1.fastq.gz && -e $TAG.R2.fastq.gz ]]
-then
-  echo "RSEM: processing quantification of $TAG as paired-end, strandedness $STRAND ($FLAG)"
-  READS="--paired-end $TAG.R1.fastq.gz $TAG.R2.fastq.gz"
+  PARROT=""
 else
-  echo "ERROR: The reqiured fastq.gz files were not found!" 
-  exit 1
+  echo "RSEM: processing quantification of $TAG as paired-end, strandedness $STRAND ($FLAG)"
+  PARROT="--paired-end"
 fi
 
 rsem-calculate-expression -p $CPUS --bam --no-bam-output $FLAG --estimate-rspd $PARROT $TAG.tr.bam $REF $TAG > $TAG.rsem.log
-
-
-rsem-calculate-expression --estimate-rspd $READS $EXTREF ${TAG}.ext_rsem &> $TAG.ext_rsem.log 
-rsem-calculate-expression --bowtie2 --estimate-rspd $READS $REF ${TAG}.rsem &> $TAG.rsem.log
-
-mv $TAG.rsem.genes.results $TAG.rsem.genes.tsv
-mv $TAG.rsem.isoforms.results $TAG.rsem.isoforms.tsv

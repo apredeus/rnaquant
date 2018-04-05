@@ -14,7 +14,7 @@ done | sort | uniq`
 
 for i in $KK
 do
-  calculate_stats.sh $i $WDIR &  
+  eu_calculate_stats.sh $i $WDIR &  
 done
 wait
 

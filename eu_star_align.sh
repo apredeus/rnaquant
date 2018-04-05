@@ -28,7 +28,7 @@ then
   READS=$WDIR/$TAG.fastq.gz
 elif [[ -e $TAG.R1.fastq.gz && -e $TAG.R2.fastq.gz ]]
 then
-  RL=`zcat $TAG.fastq.gz | head -n 2 | tail -n 1 | wc -c | awk '{print $1-1}'`
+  RL=`zcat $TAG.R1.fastq.gz | head -n 2 | tail -n 1 | wc -c | awk '{print $1-1}'`
   REF=$REFDIR/STAR/${SPECIES}_${RL}bp
   echo "Processing alignment as paired-end, using STAR index $REF."
   READS="$WDIR/$TAG.R1.fastq.gz $WDIR/$TAG.R2.fastq.gz"
@@ -39,7 +39,7 @@ fi
 
 if [[ ! -d $REF ]]
 then 
-  echo "ERROR: STAR index $REF does not exist, attempting to use default (151 bp).."
+  echo "WARNING: STAR index $REF does not exist, attempting to use default (151 bp).."
   REF=$REFDIR/STAR/${SPECIES}_151bp
   if [[ ! -d $REF ]]
   then
@@ -50,10 +50,10 @@ fi
 
 mkdir ${TAG}_STAR
 cd ${TAG}_STAR
-STAR --genomeDir $REF --readFilesIn $READS --runThreadN $CPUS --readFilesCommand zcat --outFilterMultimapNmax 15 --outFilterMismatchNmax 6  --outSAMstrandField All --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM 
+STAR --genomeDir $REF --readFilesIn $READS --runThreadN $CPUS --readFilesCommand zcat --outFilterMultimapNmax 15 --outFilterMismatchNmax 6  --outSAMstrandField All --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM &> $TAG.star_stdout.log  
 
 mv Aligned.sortedByCoord.out.bam $TAG.bam
 mv Aligned.toTranscriptome.out.bam $TAG.tr.bam 
 mv Log.out $TAG.star_run.log 
 mv Log.final.out $TAG.star_final.log
-
+samtools index $TAG.bam 

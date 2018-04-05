@@ -5,6 +5,7 @@ REFDIR=$2
 SPECIES=$3
 CPUS=$4
 STRAND=$5
+NJOB=$((CPUS/4))
 
 REF=$REFDIR/kallisto/${SPECIES}_kallisto
 if [[ -e $REF ]]
@@ -24,8 +25,8 @@ done | sort | uniq`
 
 for i in $KK
 do 
-  while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
-  kallisto_quant.sh $i $WDIR $REF $STRAND & 
+  while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
+  eu_kallisto_quant.sh $i $WDIR $REF $STRAND 8 & 
 done
 wait
 

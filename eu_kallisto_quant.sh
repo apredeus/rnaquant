@@ -6,6 +6,7 @@ TAG=$1
 WDIR=$2
 REF=$3
 STRAND=$4
+CPUS=$5
 cd $WDIR/fastqs 
 
 SINGLE=""
@@ -41,7 +42,7 @@ else
   exit 1
 fi
 
-kallisto quant -i $REF $FLAG $SINGLE --plaintext -o ${TAG}_kallisto $READS &> $TAG.kallisto.log
+kallisto quant -t $CPUS -i $REF $FLAG $SINGLE --plaintext -o ${TAG}_kallisto $READS &> $TAG.kallisto.log
 mv ${TAG}_kallisto/abundance.tsv $TAG.kallisto.isoforms.tsv
 rm -rf ${TAG}_kallisto ${TAG}_ext_kallisto
  

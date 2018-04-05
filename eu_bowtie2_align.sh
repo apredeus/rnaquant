@@ -39,4 +39,4 @@ then
   exit 1
 fi
 
-bowtie2 --very-sensitive-local -t -p $CPUS -x $RRNA $READS > /dev/null 2> $TAG.bowtie2_rrna.log
+bowtie2 --very-fast-local -t -p $CPUS -x $RRNA $READS > /dev/null 2> $TAG.bowtie2_rrna.log

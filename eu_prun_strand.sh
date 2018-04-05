@@ -11,7 +11,7 @@ for i in *.bam
 do 
   TAG=${i%%.bam}
   while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
-  strand_quant.sh $TAG $WDIR $REFDIR $SPECIES & 
+  eu_strand_quant.sh $TAG $WDIR $REFDIR $SPECIES & 
 done
 
 wait

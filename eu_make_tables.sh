@@ -14,11 +14,11 @@ cd $WDIR/RSEM
 echo -e "Gene_id\tSymbol\tGene_type" > $$.names
 cat $ANN3 | sort -k1,1 >> $$.names
 
-RSEM=`ls *.rsem.genes.tsv`
+RSEM=`ls *.genes.results`
 
 for i in $RSEM
 do
-  TAG=${i%%.rsem.genes.tsv}
+  TAG=${i%%.genes.results}
   echo $TAG > $TAG.counts.tmp
   echo $TAG > $TAG.TPM.tmp
   awk '{if (NR>1) print}' $i | sort -k1,1 | cut -f 5 >> $TAG.counts.tmp
@@ -30,7 +30,7 @@ paste $$.names *.TPM.tmp         > ../exp_tables/rsem.genes.TPM.tsv
 rm *counts.tmp *TPM.tmp $$.names
 
 ## make expression table of counts/TPM for kallisto
-cd ../kallisto
+cd $WDIR/kallisto
 
 echo -e "Transcript_id\tGene_id\tSymbol\tGene_type" > $$.names
 cat $ANN4 | sort -k1,1 >> $$.names

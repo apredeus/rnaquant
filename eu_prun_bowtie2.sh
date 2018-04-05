@@ -18,7 +18,7 @@ done | sort | uniq`
 for i in $KK
 do
   while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
-  bowtie2_align.sh $i $WDIR $REFDIR $SPECIES 4 &
+  eu_bowtie2_align.sh $i $WDIR $REFDIR $SPECIES 8 &
 done
 wait
 

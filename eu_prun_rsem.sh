@@ -5,6 +5,7 @@ REFDIR=$2
 SPECIES=$3
 CPUS=$4
 STRAND=$5
+NJOB=$((CPUS/4))
 
 REF=$REFDIR/RSEM/${SPECIES}_rsem
 if [[ -e $REF.ti ]]
@@ -16,17 +17,11 @@ fi
 
 source activate rsem
 
-KK=`for i in *fastq.gz
+for i in *.tr.bam
 do 
-  TAG1=${i%%.fastq.gz}
-  TAG2=${TAG1%%.R?}
-  echo $TAG2
-done | sort | uniq`
-
-for i in $KK
-do 
-  while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
-  rsem_quant.sh $i $WDIR $REF $STRAND & 
+  TAG=${i%%.tr.bam} 
+  while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
+  eu_rsem_quant.sh $TAG $WDIR $REF $STRAND 8 & 
 done
 wait
 
