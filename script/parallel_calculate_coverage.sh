@@ -2,17 +2,18 @@
 
 ## PIPELINE VERSION
 
-WDIR=$1
-REFDIR=$2
-SPECIES=$3
-CPUS=$4
+SDIR=$1
+WDIR=$2
+REFDIR=$3
+SPECIES=$4
+CPUS=$5
 
 cd $WDIR/bams 
 for i in *bam
 do
   TAG=${i%%.bam}
   while [ $(jobs | wc -l) -ge $CPUS ] ; do sleep 5; done
-  eu_calculate_coverage.sh $TAG $WDIR $REFDIR $SPECIES & 
+  $SDIR/script/calculate_coverage.sh $TAG $WDIR $REFDIR $SPECIES & 
 done
 wait
 

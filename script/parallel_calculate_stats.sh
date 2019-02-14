@@ -2,7 +2,8 @@
 
 ## PIPELINE VERSION
 
-WDIR=$1
+SDIR=$1
+WDIR=$2
 cd $WDIR/fastqs
 
 KK=`for i in *fastq.gz
@@ -14,8 +15,9 @@ done | sort | uniq`
 
 for i in $KK
 do
-  eu_calculate_stats.sh $i $WDIR &  
+  $SDIR/script/calculate_stats.sh $i $WDIR &  
 done
+
 wait
 
 echo "ALL RNA-STAT CALCULATIONS ARE DONE!"

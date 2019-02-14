@@ -2,11 +2,24 @@
 
 ## PIPELINE VERSION
 
-WDIR=$1
-REFDIR=$2
-SPECIES=$3
-CPUS=$4
-NJOB=$((CPUS/4))
+SDIR=$1
+WDIR=$2
+REFDIR=$3
+SPECIES=$4
+CPUS=$5
+JCPUS=""
+NJOBS=""
+
+if (( $CPUS >= 16 )) 
+then
+  JCPUS=4
+else if (( $CPUS > 4 )) 
+then
+  JCPUS=2 
+else 
+  JCPUS=1
+fi
+NJOBS=$((CPUS/JCPUS))
 
 KK=`for i in *fastq.gz
 do 
@@ -17,8 +30,8 @@ done | sort | uniq`
 
 for i in $KK
 do
-  while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
-  eu_star_align.sh $i $WDIR $REFDIR $SPECIES 8 & 
+  while [ $(jobs | wc -l) -ge $NJOBS ] ; do sleep 5; done
+  $SDIR/script/star_align.sh $i $WDIR $REFDIR $SPECIES $JCPUS & 
 done
 wait
 

@@ -11,9 +11,9 @@ SPECIES=$6
 
 DIR=`pwd`
 
-RRNA=$REFDIR/Assemblies/$SPECIES/$SPECIES.rRNA_merged.intervals
-GENOME=$REFDIR/Assemblies/$SPECIES/$SPECIES.fa
-REFFLAT=$REFDIR/Assemblies/$SPECIES/$SPECIES.refFlat.txt
+RRNA=$REFDIR/$SPECIES/$SPECIES.rRNA_merged.intervals
+GENOME=$REFDIR/$SPECIES/$SPECIES.fa
+REFFLAT=$REFDIR/$SPECIES/$SPECIES.refFlat.txt
 
 ## number of reads in FASTQ
 R1=`grep "Number of input reads" $LOGDIR/$TAG.star_final.log  | awk '{print $6}'`
