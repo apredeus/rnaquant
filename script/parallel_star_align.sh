@@ -13,7 +13,7 @@ NJOBS=""
 if (( $CPUS >= 16 )) 
 then
   JCPUS=4
-else if (( $CPUS > 4 )) 
+elif (( $CPUS > 4 )) 
 then
   JCPUS=2 
 else 

@@ -13,7 +13,7 @@ READS=""
 REF=""
 WDIR=`pwd`
 
-if [[ $TAG == "" || $SPECIES == "" || $CPUS == "" ]]
+if [[ $TAG == "" || $WDIR == "" || $SPECIES == "" || $REFDIR == "" || $JCPUS == "" ]]
 then 
   echo "ERROR: Please provide TAG, SPECIES handle, and # of CPUS!"
   exit 1

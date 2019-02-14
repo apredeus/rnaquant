@@ -5,15 +5,20 @@ SPECIES=$2 ## e.g. genprime_vM12
 CPUS=$3
 WDIR=`pwd`
 
+GRN='\033[1;32m'
+GRN2='\033[0;32m'
+UL='\033[4;34m'
+NC='\033[0m' # No Color
+
 if [[ $# != "3" ]]
 then
   echo "=================================================================================="
   echo "=================================================================================="
   echo "===                                                                            ==="
-  echo "===              What is the airspeed velocity of an unladen swallow?          ==="
+  printf "===              ${GRN2}What is the airspeed velocity of an unladen swallow?${NC}          ===\n"
   echo "===                                                                            ==="
-  echo "===                  Usage: rnaquant <ref_dir> <tag> <CPUs>                    ===" 
-  echo "===   For more usage information, visit https://github.com/apredeus/rnaquant   ==="
+  printf "===                  USAGE: ${GRN}rnaquant${NC} ${GRN2}<ref_dir> <tag> <CPUs>${NC}                    ===\n" 
+  printf "===   For more usage information, visit ${UL}https://github.com/apredeus/rnaquant${NC}   ===\n"
   echo "===                                                                            ==="
   echo "=================================================================================="
   echo "=================================================================================="
@@ -25,7 +30,7 @@ cd $WDIR
 echo "=================================================================================="
 echo "=================================================================================="
 echo "===                                                                            ==="
-echo "===                             Welcome to Rnaquant!                           ==="
+echo "===                             Welcome to RNAQUANT!                           ==="
 echo "===  For more information, please visit https://github.com/apredeus/rnaquant   ==="
 echo "===                          Publication in preparation.                       ==="
 echo "===                                                                            ==="
@@ -41,12 +46,12 @@ else
   exit 1
 fi
 
-if [[ ! -d bams || ! -d picard_stats || ! -d fc_stats || ! -d tdfs_and_bws || \
+if [[ ! -d bams || ! -d picard_stats || ! -d tdfs_and_bws || \
 ! -d RSEM || ! -d featureCounts || ! -d FastQC || ! -d STAR_logs || \
-! -d kallisto || ! -d exp_tables || ! -d bowtie2_rrna || ! -d tr_bams ]]
+! -d kallisto || ! -d exp_tables || ! -d tr_bams ]]
 then
   echo "One of the required directories is missing, I will try to create them."
-  mkdir bams picard_stats fc_stats tdfs_and_bws RSEM featureCounts FastQC kallisto exp_tables bowtie2_rrna STAR_logs tr_bams
+  mkdir bams picard_stats tdfs_and_bws RSEM featureCounts FastQC kallisto exp_tables STAR_logs tr_bams
 else
   echo "All the necessary directories found, continuing." 
 fi
@@ -72,44 +77,44 @@ echo
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 1: Running FastQC.."
-cd $WDIR/fastqs 
-$SDIR/script/parallel_fastqc.sh $WDIR $CPUS
+#echo "["`date +%H:%M:%S`"] Step 1: Running FastQC.."
+#cd $WDIR/fastqs 
+#$SDIR/script/parallel_fastqc.sh $WDIR $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 2: Running STAR genome and transcriptome alignment.."
-cd $WDIR/fastqs
-$SDIR/script/parallel_star_align.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+#echo "["`date +%H:%M:%S`"] Step 2: Running STAR genome and transcriptome alignment.."
+#cd $WDIR/fastqs
+#$SDIR/script/parallel_star_align.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 3: Making TDF and strand-specific bigWig files.."
-cd $WDIR/bams
-$SDIR/script/parallel_calculate_coverage.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+#echo "["`date +%H:%M:%S`"] Step 3: Making TDF and strand-specific bigWig files.."
+#cd $WDIR/bams
+#$SDIR/script/parallel_calculate_coverage.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 4: Running featureCounts on all possible strand settings.."
-cd $WDIR/bams
-$SDIR/script/parallel_strand_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+#echo "["`date +%H:%M:%S`"] Step 4: Running featureCounts on all possible strand settings.."
+#cd $WDIR/bams
+#$SDIR/script/parallel_strand_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 5: Calculating strandedness from featureCounts.."
-cd $WDIR/fastqs
-$SDIR/script/parallel_calculate_stats.sh $SDIR $WDIR
+#echo "["`date +%H:%M:%S`"] Step 5: Calculating strandedness from featureCounts.."
+#cd $WDIR/fastqs
+#$SDIR/script/parallel_calculate_stats.sh $SDIR $WDIR
 echo 
 echo "=================================================================================="
 echo
 
-echo "["`date +%H:%M:%S`"] Step 6: Calculating strandedness and other stats using Picard tools.."
-cd $WDIR/picard_stats
-$SDIR/script/parallel_picard_stats.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+#echo "["`date +%H:%M:%S`"] Step 6: Calculating strandedness and other stats using Picard tools.."
+#cd $WDIR/picard_stats
+#$SDIR/script/parallel_picard_stats.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
@@ -140,16 +145,16 @@ else
 fi
 cd ..
 
-echo "["`date +%H:%M:%S`"] Step 7: Running kallisto abundance estimation.."
-cd $WDIR/fastqs
-$SDIR/script/parallel_kallisto_quant.sh $WDIR $REFDIR $SPECIES $CPUS $STRAND
+#echo "["`date +%H:%M:%S`"] Step 7: Running kallisto abundance estimation.."
+#cd $WDIR/fastqs
+#$SDIR/script/parallel_kallisto_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS $STRAND
 echo 
 echo "=================================================================================="
 echo
 
 echo "["`date +%H:%M:%S`"] Step 8: Running RSEM abundance estimation.."
 cd $WDIR/tr_bams
-$SDIR/script/parallel_rsem_quant.sh $WDIR $REFDIR $SPECIES $CPUS $STRAND
+$SDIR/script/parallel_rsem_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS $STRAND
 echo 
 echo "=================================================================================="
 echo

@@ -1,18 +1,22 @@
 #!/bin/bash 
 
-WDIR=$1
-REFDIR=$2
-SPECIES=$3
-CPUS=$4
-STRAND=$5
+SDIR=$1
+WDIR=$2
+REFDIR=$3
+SPECIES=$4
+CPUS=$5
+STRAND=$6
 NJOB=$((CPUS/4))
 
-REF=$REFDIR/kallisto/${SPECIES}_kallisto
+REF=$REFDIR/$SPECIES/${SPECIES}_kallisto
+
 if [[ -e $REF ]]
 then
   echo "kallisto: using reference $REF"
+  echo 
 else 
-  echo "ERROR: kallisto reference $REF not found!" 
+  >&2 echo "ERROR: kallisto reference $REF not found!" 
+  exit 1
 fi 
 
 
@@ -26,7 +30,7 @@ done | sort | uniq`
 for i in $KK
 do 
   while [ $(jobs | wc -l) -ge $NJOB ] ; do sleep 5; done
-  eu_kallisto_quant.sh $i $WDIR $REF $STRAND 8 & 
+  $SDIR/script/kallisto_quant.sh $i $WDIR $REF $STRAND 4 & 
 done
 wait
 

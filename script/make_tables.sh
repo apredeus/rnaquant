@@ -3,8 +3,8 @@
 WDIR=$1
 REFDIR=$2
 SPECIES=$3
-ANN3=$REFDIR/Assemblies/$SPECIES/${SPECIES}.3col
-ANN4=$REFDIR/Assemblies/$SPECIES/${SPECIES}.4col
+ANN3=$REFDIR/$SPECIES/$SPECIES.3col
+ANN4=$REFDIR/$SPECIES/$SPECIES.4col
 
 
 ## make expression table of counts/TPM for rsem
