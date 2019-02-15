@@ -15,7 +15,7 @@ then
   echo "=================================================================================="
   echo "=================================================================================="
   echo "===                                                                            ==="
-  printf "===              ${GRN2}What is the airspeed velocity of an unladen swallow?${NC}          ===\n"
+  printf "===           ${GRN2}What is the airspeed velocity of an unladen swallow?${NC}             ===\n"
   echo "===                                                                            ==="
   printf "===                  USAGE: ${GRN}rnaquant${NC} ${GRN2}<ref_dir> <tag> <CPUs>${NC}                    ===\n" 
   printf "===   For more usage information, visit ${UL}https://github.com/apredeus/rnaquant${NC}   ===\n"
@@ -77,44 +77,44 @@ echo
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 1: Running FastQC.."
-#cd $WDIR/fastqs 
-#$SDIR/script/parallel_fastqc.sh $WDIR $CPUS
+echo "["`date +%H:%M:%S`"] Step 1: Running FastQC.."
+cd $WDIR/fastqs 
+$SDIR/script/parallel_fastqc.sh $WDIR $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 2: Running STAR genome and transcriptome alignment.."
-#cd $WDIR/fastqs
-#$SDIR/script/parallel_star_align.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+echo "["`date +%H:%M:%S`"] Step 2: Running STAR genome and transcriptome alignment.."
+cd $WDIR/fastqs
+$SDIR/script/parallel_star_align.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 3: Making TDF and strand-specific bigWig files.."
-#cd $WDIR/bams
-#$SDIR/script/parallel_calculate_coverage.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+echo "["`date +%H:%M:%S`"] Step 3: Making TDF and strand-specific bigWig files.."
+cd $WDIR/bams
+$SDIR/script/parallel_calculate_coverage.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 4: Running featureCounts on all possible strand settings.."
-#cd $WDIR/bams
-#$SDIR/script/parallel_strand_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+echo "["`date +%H:%M:%S`"] Step 4: Running featureCounts on all possible strand settings.."
+cd $WDIR/bams
+$SDIR/script/parallel_strand_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 5: Calculating strandedness from featureCounts.."
-#cd $WDIR/fastqs
-#$SDIR/script/parallel_calculate_stats.sh $SDIR $WDIR
+echo "["`date +%H:%M:%S`"] Step 5: Calculating strandedness from featureCounts.."
+cd $WDIR/fastqs
+$SDIR/script/parallel_calculate_stats.sh $SDIR $WDIR
 echo 
 echo "=================================================================================="
 echo
 
-#echo "["`date +%H:%M:%S`"] Step 6: Calculating strandedness and other stats using Picard tools.."
-#cd $WDIR/picard_stats
-#$SDIR/script/parallel_picard_stats.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
+echo "["`date +%H:%M:%S`"] Step 6: Calculating strandedness and other stats using Picard tools.."
+cd $WDIR/picard_stats
+$SDIR/script/parallel_picard_stats.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS
 echo 
 echo "=================================================================================="
 echo
@@ -145,9 +145,9 @@ else
 fi
 cd ..
 
-#echo "["`date +%H:%M:%S`"] Step 7: Running kallisto abundance estimation.."
-#cd $WDIR/fastqs
-#$SDIR/script/parallel_kallisto_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS $STRAND
+echo "["`date +%H:%M:%S`"] Step 7: Running kallisto abundance estimation.."
+cd $WDIR/fastqs
+$SDIR/script/parallel_kallisto_quant.sh $SDIR $WDIR $REFDIR $SPECIES $CPUS $STRAND
 echo 
 echo "=================================================================================="
 echo
