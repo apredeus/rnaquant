@@ -42,7 +42,7 @@ fi
 
 mkdir ${TAG}_STAR
 cd ${TAG}_STAR
-STAR --genomeDir $REF --readFilesIn $READS --runThreadN $JCPUS --readFilesCommand zcat --outFilterMultimapNmax 15 --outFilterMismatchNmax 6  --outSAMstrandField All --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM &> $TAG.star_stdout.log  
+STAR --genomeDir $REF --readFilesIn $READS --runThreadN $JCPUS --readFilesCommand zcat --outFilterMultimapNmax 15 --outFilterMismatchNmax 6  --outSAMstrandField intronMotif --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM &> $TAG.star_stdout.log  
 
 mv Aligned.sortedByCoord.out.bam $TAG.bam
 mv Aligned.toTranscriptome.out.bam $TAG.tr.bam 
